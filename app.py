@@ -90,10 +90,8 @@ def predict():
 
 @app.route("/predict_form", methods=['GET', 'POST'])
 def predict_form():
-    if request.method == 'GET':
-        form = ClientDataForm()
-        return render_template('form.html', form=form)
-    elif request.method == 'POST':
+    form = ClientDataForm()
+    if request.method == 'POST':
         data['ID'] = request.form.get('id')
         data['Exposure'] = float(request.form.get('exposure'))
         data['LicAge'] = float(request.form.get('licage'))
@@ -112,6 +110,7 @@ def predict_form():
         except ConnectionError:
             response = json.dumps({"error": "ConnectionError"})
         return redirect(url_for('predicted', response=response))
+    return render_template('form.html', form=form)
 
 
 @app.route("/predicted/<response>")

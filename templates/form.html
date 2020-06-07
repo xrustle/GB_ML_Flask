@@ -9,7 +9,7 @@
         <div class="form-group row">
             {{ form.hidden_tag() }}
             {% for field in form if field.widget.input_type != 'hidden' %}
-                {{ field.label(class="col-form-label col-xs-8 col-md-6 my-1") }}
+                {{ field.label(class="col-form-label col-xs-8 col-md-6 my-2") }}
                 {{ field(class="form-control col-xs-6 col-md-4 my-2") }}
             {% endfor %}
         </div>
