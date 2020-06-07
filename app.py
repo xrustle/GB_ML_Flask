@@ -7,9 +7,8 @@ from requests.exceptions import ConnectionError
 from wtforms import IntegerField, SelectField
 from wtforms.validators import DataRequired
 
-from postman import data, send_json
-
 import json
+import requests
 import os
 
 from process_data import process_input
@@ -53,6 +52,12 @@ class ClientDataForm(FlaskForm):
     sociocateg = SelectField('Социальная категория', choices=[('CSP' + str(i), str(i)) for i in range(1, 8)])
 
 
+def send_json(data):  # postman send_json not working
+    headers = {'content-type': 'application/json'}
+    response = requests.post(url_for('predict', _external=True), json=data, headers=headers)
+    return response
+
+
 @app.route("/")
 def index():
     return render_template('index.html')
@@ -92,18 +97,18 @@ def predict():
 def predict_form():
     form = ClientDataForm()
     if request.method == 'POST':
-        data['ID'] = request.form.get('id')
-        data['Exposure'] = float(request.form.get('exposure'))
-        data['LicAge'] = float(request.form.get('licage'))
-        data['Gender'] = request.form.get('gender')
-        data['MariStat'] = request.form.get('maristat')
-        data['DrivAge'] = float(request.form.get('drivage'))
-        data['HasKmLimit'] = request.form.get('haskmlimit')
-        data['BonusMalus'] = float(request.form.get('bonusmalus'))
-        data['OutUseNb'] = float(request.form.get('outuse'))
-        data['RiskArea'] = float(request.form.get('riskarea'))
-        data['VehUsage'] = request.form.get('vehusage')
-        data['SocioCateg'] = request.form.get('sociocateg')
+        data = {'ID': request.form.get('id'),
+                'Exposure': float(request.form.get('exposure')),
+                'LicAge': float(request.form.get('licage')),
+                'Gender': request.form.get('gender'),
+                'MariStat': request.form.get('maristat'),
+                'DrivAge': float(request.form.get('drivage')),
+                'HasKmLimit': request.form.get('haskmlimit'),
+                'BonusMalus': float(request.form.get('bonusmalus')),
+                'OutUseNb': float(request.form.get('outuse')),
+                'RiskArea': float(request.form.get('riskarea')),
+                'VehUsage': request.form.get('vehusage'),
+                'SocioCateg': request.form.get('sociocateg')}
         try:
             response = send_json(data)
             response = response.text
